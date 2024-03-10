@@ -1,0 +1,50 @@
+name: Terraform CI/CD pipeline to deploy resources in AWS
+run-name: ${{github.actor}} has triggered the pipeline
+
+on:
+    push:
+        branches:
+            - 'main'
+env:
+    AWS_ACCESS_KEY: ${{secrets.AWS_ACCESS_KEY}}
+    AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+
+jobs:
+    build-infra:
+        name: terraform-ci-cd
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v2
+
+            - name: get pub-ip
+              id: get-ip
+              run: |
+                export pub-ip=$(bash get-ip.sh)
+              working-directory: ./scripts
+
+            - name: set up terraform
+              uses: hashicorp/setup-terraform@v2
+
+            - name: Terraform init
+              id: init
+              run: terraform init
+              working-directory: ./terraform-scripts
+
+            - name: Terraform validate
+              id: validate
+              run: terraform validate
+              working-directory: ./terraform-scripts
+
+            - name: Terraform plan
+              id: plan
+              run: terraform plan
+              working-directory: ./terraform-scripts
+              
+            - name: Terraform apply
+              id: apply
+              env:
+                pub-ip: ${{steps.get-ip.outputs.pub-ip}}
+                pub_key: ${{secrets.PUB_KEY}}
+              run: terraform apply -var="my-pub-ip=$pub-ip"-var="public_key=$pub_key" -auto-approve
+              working-directory: ./terraform-scripts
