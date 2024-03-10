@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Use curl to fetch the public IP address from an external service
-DYNAMIC_IP=$(curl -s https://api.ipify.org)
+# Fetch the public IP address
+pub_ip=$(curl -s ifconfig.me)
 
-# Output the dynamic IP address
-echo $DYNAMIC_IP
+# Output the public IP address
+echo "$pub_ip"

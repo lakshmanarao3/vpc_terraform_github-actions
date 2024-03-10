@@ -20,8 +20,10 @@ jobs:
             - name: get pub-ip
               id: get-ip
               run: |
-                export pub-ip=$(bash get-ip.sh)
+                pub_ip=$(bash get-ip.sh)
+                echo "::set-output name=pub-ip::$pub_ip"
               working-directory: ./scripts
+            
 
             - name: set up terraform
               uses: hashicorp/setup-terraform@v2
@@ -46,5 +48,5 @@ jobs:
               env:
                 pub-ip: ${{steps.get-ip.outputs.pub-ip}}
                 pub_key: ${{secrets.PUB_KEY}}
-              run: terraform apply -var="my-pub-ip=$pub-ip"-var="public_key=$pub_key" -auto-approve
-              working-directory: ./terraform-scripts
+              run: terraform apply -var="my-pub-ip=${{env.pub-ip}}" -var="public_key=${{env.pub_key}}" -auto-approve
+            
