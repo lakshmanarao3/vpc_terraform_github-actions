@@ -40,7 +40,10 @@ jobs:
 
             - name: Terraform plan
               id: plan
-              run: terraform plan
+              env:
+                pub-ip: ${{steps.get-ip.outputs.pub-ip}}
+                pub_key: ${{secrets.PUB_KEY}}
+              run: terraform plan -var="my-pub-ip=${{env.pub-ip}}" -var="public_key=${{env.pub_key}}"
               working-directory: ./terraform-scripts
               
             - name: Terraform apply
