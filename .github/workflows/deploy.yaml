@@ -52,4 +52,5 @@ jobs:
                 pub-ip: ${{steps.get-ip.outputs.pub-ip}}
                 pub_key: ${{secrets.PUB_KEY}}
               run: terraform apply -var="my-pub-ip=${{env.pub-ip}}/32" -var="public_key=${{env.pub_key}}" -auto-approve
+              working-directory: ./terraform-scripts
             
