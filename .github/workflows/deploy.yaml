@@ -43,7 +43,7 @@ jobs:
               env:
                 pub-ip: ${{steps.get-ip.outputs.pub-ip}}
                 pub_key: ${{secrets.PUB_KEY}}
-              run: terraform plan -var="my-pub-ip=${{env.pub-ip}}" -var="public_key=${{env.pub_key}}"
+              run: terraform plan -var="my-pub-ip=${{env.pub-ip}}/32" -var="public_key=${{env.pub_key}}"
               working-directory: ./terraform-scripts
               
             - name: Terraform apply
@@ -51,5 +51,5 @@ jobs:
               env:
                 pub-ip: ${{steps.get-ip.outputs.pub-ip}}
                 pub_key: ${{secrets.PUB_KEY}}
-              run: terraform apply -var="my-pub-ip=${{env.pub-ip}}" -var="public_key=${{env.pub_key}}" -auto-approve
+              run: terraform apply -var="my-pub-ip=${{env.pub-ip}}/32" -var="public_key=${{env.pub_key}}" -auto-approve
             
